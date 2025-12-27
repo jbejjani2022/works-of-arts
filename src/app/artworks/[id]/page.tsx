@@ -6,31 +6,46 @@ import { Shell } from '@/components/layout/Shell'
 import { createServerClient, getArtworkById } from '@/lib/supabase'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { ImageZoomModal } from '@/components/artworks/ImageZoomModal'
+import type { ArtworkMedium } from '@/lib/types'
 
 // Revalidate every 5 minutes
 export const revalidate = 300
 
 interface ArtworkDetailPageProps {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ medium?: string }>
 }
 
-async function ArtworkDetail({ id }: { id: string }) {
+async function ArtworkDetail({
+  id,
+  filterMedium,
+}: {
+  id: string
+  filterMedium?: ArtworkMedium | null
+}) {
   try {
     const supabase = await createServerClient()
     const artwork = await getArtworkById(supabase, id)
 
-    // Fetch all artworks in the same category for navigation
+    // Fetch all artworks for navigation
+    // IMPORTANT: Must match the exact query used on the artworks page
+    // to ensure the ordering matches what's displayed in the grid
     const allArtworks = await supabase
       .from('artworks')
-      .select('id')
-      .eq('medium', artwork.medium)
+      .select('id, medium')
       .order('year', { ascending: false })
-      .order('created_at', { ascending: false })
 
     if (allArtworks.error) throw allArtworks.error
 
+    // Filter based on the context the user came from (filterMedium param)
+    // If filterMedium is provided, filter by that medium; otherwise show all artworks
+    const filteredArtworks = filterMedium
+      ? allArtworks.data.filter((a) => a.medium === filterMedium)
+      : allArtworks.data
+
     // Find current position and calculate prev/next
-    const artworkIds = allArtworks.data.map((a) => a.id)
+    // Reverse the array so the first card on the grid (top-left) is #1
+    const artworkIds = filteredArtworks.map((a) => a.id)
     const currentIndex = artworkIds.indexOf(id)
     const totalCount = artworkIds.length
     const prevId = currentIndex > 0 ? artworkIds[currentIndex - 1] : null
@@ -43,24 +58,23 @@ async function ArtworkDetail({ id }: { id: string }) {
         ? `${artwork.length}" × ${artwork.width}" × ${artwork.height}"`
         : `${artwork.height}" × ${artwork.width}"`
 
-    // Build breadcrumb path based on artwork medium
-    const breadcrumbMedium =
-      artwork.medium === 'Painting'
+    // Build breadcrumb path based on filter context (not artwork medium)
+    const breadcrumbMedium = filterMedium
+      ? filterMedium === 'Painting'
         ? 'Paintings'
-        : artwork.medium === 'Work on Paper'
+        : filterMedium === 'Work on Paper'
           ? 'Works on Paper'
-          : artwork.medium === 'Sculpture'
-            ? 'Sculpture'
-            : null
+          : 'Sculpture'
+      : null
 
-    const mediumUrl =
-      artwork.medium === 'Painting'
-        ? '/artworks?medium=Painting'
-        : artwork.medium === 'Work on Paper'
-          ? '/artworks?medium=Work+on+Paper'
-          : artwork.medium === 'Sculpture'
-            ? '/artworks?medium=Sculpture'
-            : '/artworks'
+    const mediumUrl = filterMedium
+      ? `/artworks?medium=${encodeURIComponent(filterMedium)}`
+      : '/artworks'
+
+    // Build filter query param for navigation links
+    const filterQueryParam = filterMedium
+      ? `?medium=${encodeURIComponent(filterMedium)}`
+      : ''
 
     return (
       <div className="max-w-6xl mx-auto">
@@ -89,7 +103,7 @@ async function ArtworkDetail({ id }: { id: string }) {
         <div className="text-sm text-gray-600 mb-6 md:mb-8 flex items-center gap-2">
           {prevId ? (
             <Link
-              href={`/artworks/${prevId}`}
+              href={`/artworks/${prevId}${filterQueryParam}`}
               className="hover:text-black transition-colors cursor-pointer"
             >
               {'<'}
@@ -102,7 +116,7 @@ async function ArtworkDetail({ id }: { id: string }) {
           </span>
           {nextId ? (
             <Link
-              href={`/artworks/${nextId}`}
+              href={`/artworks/${nextId}${filterQueryParam}`}
               className="hover:text-black transition-colors cursor-pointer"
             >
               {'>'}
@@ -164,8 +178,18 @@ async function ArtworkDetail({ id }: { id: string }) {
 
 export default async function ArtworkDetailPage({
   params,
+  searchParams,
 }: ArtworkDetailPageProps) {
   const { id } = await params
+  const { medium: mediumParam } = await searchParams
+
+  // Parse medium filter from URL query params
+  const filterMedium: ArtworkMedium | null =
+    mediumParam === 'Painting' ||
+    mediumParam === 'Work on Paper' ||
+    mediumParam === 'Sculpture'
+      ? mediumParam
+      : null
 
   return (
     <Shell>
@@ -188,7 +212,7 @@ export default async function ArtworkDetailPage({
             </div>
           }
         >
-          <ArtworkDetail id={id} />
+          <ArtworkDetail id={id} filterMedium={filterMedium} />
         </Suspense>
       </div>
     </Shell>

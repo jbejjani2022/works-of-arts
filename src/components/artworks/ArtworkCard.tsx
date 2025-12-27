@@ -3,18 +3,24 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
-import type { Artwork } from '@/lib/types'
+import type { Artwork, ArtworkMedium } from '@/lib/types'
 
 interface ArtworkCardProps {
   artwork: Artwork
+  filterMedium?: ArtworkMedium | null
 }
 
-export function ArtworkCard({ artwork }: ArtworkCardProps) {
+export function ArtworkCard({ artwork, filterMedium }: ArtworkCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+
+  // Build URL with filter context if present
+  const href = filterMedium
+    ? `/artworks/${artwork.id}?medium=${encodeURIComponent(filterMedium)}`
+    : `/artworks/${artwork.id}`
 
   return (
     <Link
-      href={`/artworks/${artwork.id}`}
+      href={href}
       className="group block cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

@@ -22,7 +22,11 @@ export function ArtworksGrid({ artworks, filterMedium }: ArtworksGridProps) {
   return (
     <div className="flex flex-wrap gap-6">
       {filteredArtworks.map((artwork) => (
-        <ArtworkCard key={artwork.id} artwork={artwork} />
+        <ArtworkCard
+          key={artwork.id}
+          artwork={artwork}
+          filterMedium={filterMedium}
+        />
       ))}
     </div>
   )
