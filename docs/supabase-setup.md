@@ -5,8 +5,8 @@ This guide walks you through setting up a Supabase project for the Marcella Vlah
 ## 1. Create Supabase Project
 
 1. Go to [supabase.com](https://supabase.com) and sign up/sign in
-2. Click "New Project"
-3. Choose your organization
+2. Choose your organization
+3. Create new project
 4. Set project name: `marcella-vlahos-portfolio`
 5. Set a strong database password
 6. Choose a region close to your users
@@ -16,11 +16,22 @@ Wait for the project to be created (usually 1-2 minutes).
 
 ## 2. Get Project Credentials
 
-1. Go to Project Settings → API
-2. Copy the following values for your `.env.local` file:
-   - **Project URL**: Copy the URL
-   - **Project API Keys**: Copy the `anon/public` key
-   - **Service Role Key**: Copy the `service_role` key (keep this secret)
+Create `.env.local` (copied from `.env.example`) in your project root:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+Fill the env variables as follows:
+
+1. Go to Project Settings → Data API
+   - **Project URL**: Copy the URL into `NEXT_PUBLIC_SUPABASE_URL`
+2. Go to API Keys → `Legacy anon, service_role API keys`
+   - **Project API Key**: Copy the `anon` `public` key into `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - **Service Role Key**: Copy the `service_role` key into `SUPABASE_SERVICE_ROLE_KEY` (keep this secret)
 
 ## 3. Database Schema
 
@@ -83,7 +94,7 @@ CREATE TRIGGER update_bio_updated_at
 
 ```sql
 INSERT INTO bio (content) VALUES (
-  'Marcella Vlahos is a contemporary artist working primarily in painting, works on paper, and sculpture. Her work explores themes of light, form, and the relationship between interior and exterior spaces.
+'Marcella Vlahos is a contemporary artist working primarily in painting, works on paper, and sculpture. Her work explores themes of light, form, and the relationship between interior and exterior spaces.
 
 Born and raised in the Pacific Northwest, Marcella draws inspiration from the natural landscape while investigating how traditional artistic mediums can express contemporary experiences. Her paintings often feature subtle color palettes that evoke the changing qualities of light throughout the day.
 
@@ -141,11 +152,12 @@ USING (true);
 2. Click "New bucket"
 3. Name: `artworks`
 4. Set as public bucket: **Yes**
-5. Click "Create bucket"
+5. Restrict MIME types to `image/png`
+6. Click "Create bucket"
 
 ### Storage Policies
 
-Go to Storage → artworks bucket → Policies, then create these policies:
+Click the artworks bucket → Policies (top right), then create these policies (via `New policy` under `Buckets`) with the 'Create a policy from scratch' flow:
 
 ```sql
 -- Allow public read access
@@ -185,23 +197,11 @@ USING (bucket_id = 'artworks');
 
 ### Configure Auth Settings
 
-1. Go to Authentication → Settings
+1. Go to Authentication → URL Configuration
 2. **Site URL**: Set to your domain (for dev: `http://localhost:3000`)
-3. **Email Templates**: Customize if needed (optional)
-4. **Email Auth**: Should be enabled by default
+3. **Email Auth**: Should be enabled by default
 
-## 7. Environment Variables
-
-Create `.env.local` in your project root:
-
-```bash
-NEXT_PUBLIC_SUPABASE_URL=your_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
-
-## 8. Test the Connection
+## 7. Test the Connection
 
 Run your development server:
 
@@ -215,7 +215,7 @@ The app should now be able to connect to Supabase. Test by:
 2. Going to `/admin/login` and logging in with the created user
 3. Checking browser console for any connection errors
 
-## 9. Optional: Sample Data
+## 8. Optional: Sample Data
 
 To add sample artwork data for testing:
 

@@ -57,3 +57,84 @@ The product requirements live in: SPEC.md (source of truth).
 
 - For any new, key decisions made or changed, update docs/decisions.md appropriately to document the decision.
 - For any new, key architectural decisions or changes made, update docs/architecture.md appropriately to document the change.
+
+## Implementation Roadmap
+
+### ✅ Step 1: Project Foundation & Tooling [COMPLETE]
+
+**Goal**: Set up Next.js project with all tooling, configs, and baseline structure
+**Status**: Complete (commit: fab6ff3)
+**Includes**:
+
+- Next.js 14 with App Router + TypeScript + Tailwind
+- ESLint, Prettier, TypeScript strict mode
+- Vitest + React Testing Library
+- Supabase client setup (server & client)
+- Basic folder structure and placeholder files
+- Complete documentation (README, architecture, decisions, Supabase setup)
+- Package scripts: dev, build, lint, typecheck, test, format
+
+### ✅ Step 2: Core Layout & Navigation [COMPLETE]
+
+**Goal**: Implement responsive sidebar and basic page routing
+**Status**: Complete
+**Includes**:
+
+- Sidebar component with navigation logic
+  - Artist name links to homepage
+  - Navigation links (About, Artworks)
+  - Nested medium filters on Artworks page
+  - Smooth slide animations
+- Shell wrapper component for About/Artworks pages
+- SidebarToggle component for home page hero overlay
+- Responsive behavior:
+  - Home page: sidebar closed by default, toggleable on all screens
+  - About/Artworks pages: sidebar always visible on desktop, toggleable on mobile
+- Basic page shells for /, /about, /artworks
+- Proper mobile spacing and cursor pointer styling
+- All TypeScript types, tests pass, code formatted
+
+### ⏳ Step 3: Supabase Integration & Types [NEXT]
+
+**Goal**: Set up Supabase clients and database schema
+**Success Criteria**:
+
+- Supabase clients configured for server/client use
+- TypeScript types defined for Artwork and Bio
+- Environment variables documented
+
+### ⏳ Step 4: Public Pages Implementation
+
+**Goal**: Build home, about, and artworks pages with real data
+**Success Criteria**:
+
+- Home page shows random hero artwork
+- About page displays bio content
+- Artworks page shows filterable grid
+
+### ⏳ Step 5: Admin Authentication & Layout
+
+**Goal**: Implement secure admin area with authentication
+**Success Criteria**:
+
+- Login/logout flow works
+- Admin pages are auth-protected
+- Admin shell layout implemented
+
+### ⏳ Step 6: Admin CMS Functionality
+
+**Goal**: Full CRUD operations for artworks and bio editing
+**Success Criteria**:
+
+- Can create, edit, delete artworks
+- Image upload to Supabase Storage works
+- Bio editor saves content
+
+### ⏳ Step 7: Polish & Production Readiness
+
+**Goal**: Final optimizations, error handling, and deployment prep
+**Success Criteria**:
+
+- Error boundaries implemented
+- Loading states for all async operations
+- Performance optimized
