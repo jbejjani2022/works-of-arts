@@ -53,12 +53,17 @@ src/
 - `year` (integer, required)
 - `medium` (enum: Painting, Work on Paper, Sculpture)
 - `details` (text, optional)
-- `height` (numeric, required)
-- `width` (numeric, required)
-- `length` (numeric, nullable - required for sculptures)
+- `height` (numeric, optional)
+- `width` (numeric, optional)
+- `length` (numeric, optional)
 - `image_url` (text, required)
 - `created_at` (timestamp)
 - `updated_at` (timestamp)
+
+**Display Rules:**
+
+- Dimensions are only displayed if both width and height are provided
+- For sculptures, dimensions are only displayed if width, height, AND length are all provided
 
 **bio table:**
 

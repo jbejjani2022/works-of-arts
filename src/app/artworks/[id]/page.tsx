@@ -52,11 +52,21 @@ async function ArtworkDetail({
     const nextId =
       currentIndex < totalCount - 1 ? artworkIds[currentIndex + 1] : null
 
-    // Format dimensions based on medium
-    const dimensions =
+    // Format dimensions based on medium and availability
+    // For sculptures: only show if all three dimensions (width, height, length) are provided
+    // For other mediums: only show if both width and height are provided
+    const shouldShowDimensions =
       artwork.medium === 'Sculpture'
+        ? artwork.width != null &&
+          artwork.height != null &&
+          artwork.length != null
+        : artwork.width != null && artwork.height != null
+
+    const dimensions = shouldShowDimensions
+      ? artwork.medium === 'Sculpture'
         ? `${artwork.length}" × ${artwork.width}" × ${artwork.height}"`
         : `${artwork.height}" × ${artwork.width}"`
+      : null
 
     // Build breadcrumb path based on filter context (not artwork medium)
     const breadcrumbMedium = filterMedium
@@ -162,9 +172,11 @@ async function ArtworkDetail({
                 </div>
               )}
 
-              <div>
-                <span>{dimensions}</span>
-              </div>
+              {dimensions && (
+                <div>
+                  <span>{dimensions}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -18,40 +18,40 @@ export type Database = {
         Row: {
           created_at: string | null
           details: string | null
-          height: number
+          height: number | null
           id: string
           image_url: string
           length: number | null
           medium: string
           title: string
           updated_at: string | null
-          width: number
+          width: number | null
           year: number
         }
         Insert: {
           created_at?: string | null
           details?: string | null
-          height: number
+          height?: number | null
           id?: string
           image_url: string
           length?: number | null
           medium: string
           title: string
           updated_at?: string | null
-          width: number
+          width?: number | null
           year: number
         }
         Update: {
           created_at?: string | null
           details?: string | null
-          height?: number
+          height?: number | null
           id?: string
           image_url?: string
           length?: number | null
           medium?: string
           title?: string
           updated_at?: string | null
-          width?: number
+          width?: number | null
           year?: number
         }
         Relationships: []

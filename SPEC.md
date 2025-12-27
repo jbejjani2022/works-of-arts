@@ -59,12 +59,17 @@ Columns:
 - `year`: `integer` (optional or required; up to you)
 - `medium`: `text` (enum-like: `"Painting" | "Work on Paper" | "Sculpture"`)
 - `details`: `text` (e.g. `"Pastel on paper"`)
-- `height`: `numeric` (or `float8`) – dimensions will be inches
-- `width`: `numeric`
-- `length`: `numeric` (nullable; only for Sculpture)
+- `height`: `numeric` (optional) – dimensions will be inches
+- `width`: `numeric` (optional)
+- `length`: `numeric` (optional; for Sculpture)
 - `image_url`: `text` (required; public URL from Supabase Storage)
 - `created_at`: `timestamp with time zone` (default `now()`)
 - `updated_at`: `timestamp with time zone` (default `now()`, updated on change)
+
+**Display Rules:**
+
+- Dimensions are only displayed on artwork detail pages if both width and height are provided
+- For sculptures, dimensions are only displayed if width, height, AND length are all provided
 
 Indexes:
 
