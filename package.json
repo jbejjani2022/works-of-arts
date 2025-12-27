@@ -13,7 +13,8 @@
     "format:check": "prettier --check .",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "supabase:types": "supabase gen types typescript --project-id xixlzbehrgmrbcakbjqv > src/lib/supabase/database.types.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -40,6 +41,7 @@
     "eslint-config-next": "16.1.0",
     "jsdom": "^27.3.0",
     "prettier": "^3.7.4",
+    "supabase": "^2.70.5",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.0.16"
