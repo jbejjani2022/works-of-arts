@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { Sidebar } from './Sidebar'
 
 interface ShellProps {
@@ -21,11 +21,13 @@ export function Shell({ children }: ShellProps) {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar - always rendered, responsive behavior handled within */}
-      <Sidebar
-        isOpen={isSidebarOpen}
-        onToggle={toggleSidebar}
-        showMenuIcon={false}
-      />
+      <Suspense fallback={<div className="w-64" />}>
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onToggle={toggleSidebar}
+          showMenuIcon={false}
+        />
+      </Suspense>
 
       {/* Main content */}
       <main className="flex-1">

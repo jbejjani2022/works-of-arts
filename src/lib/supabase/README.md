@@ -60,7 +60,6 @@ const bio = await getBio(supabase)
 
 - **`uploadArtworkImage(supabase, file, options?)`** - Upload an image to storage
   - Returns the public URL of the uploaded image
-  
 - **`deleteArtworkImage(supabase, imageUrl)`** - Delete an image from storage
 
 - **`getArtworkImageUrl(supabase, filePath)`** - Get public URL for an image
@@ -98,10 +97,10 @@ import { createServerClient, getArtworks } from '@/lib/supabase'
 
 export default async function ArtworksPage() {
   const supabase = await createServerClient()
-  const paintings = await getArtworks(supabase, { 
+  const paintings = await getArtworks(supabase, {
     medium: 'Painting',
     orderBy: 'year',
-    ascending: false 
+    ascending: false
   })
 
   return (
@@ -117,25 +116,32 @@ export default async function ArtworksPage() {
 ### Upload and Create Artwork
 
 ```typescript
-import { createBrowserClient, uploadArtworkImage, createArtwork } from '@/lib/supabase'
+import {
+  createBrowserClient,
+  uploadArtworkImage,
+  createArtwork,
+} from '@/lib/supabase'
 
 async function handleSubmit(formData: FormData) {
   const supabase = createBrowserClient()
   const file = formData.get('image') as File
-  
+
   // Upload image
   const imageUrl = await uploadArtworkImage(supabase, file)
-  
+
   // Create artwork record
   const artwork = await createArtwork(supabase, {
     title: formData.get('title') as string,
     year: parseInt(formData.get('year') as string),
-    medium: formData.get('medium') as 'Painting' | 'Work on Paper' | 'Sculpture',
+    medium: formData.get('medium') as
+      | 'Painting'
+      | 'Work on Paper'
+      | 'Sculpture',
     height: parseFloat(formData.get('height') as string),
     width: parseFloat(formData.get('width') as string),
     image_url: imageUrl,
   })
-  
+
   return artwork
 }
 ```

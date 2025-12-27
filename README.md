@@ -4,6 +4,8 @@ A minimal, modern, responsive website for artist portfolios, featuring a simple 
 
 Work done on commission for artist Marcella Vlahos.
 
+Easily configurable for the work of any artist.
+
 ## What This App Is
 
 This is a Next.js application that serves as an artist's portfolio website with:
@@ -42,7 +44,11 @@ This is a Next.js application that serves as an artist's portfolio website with:
 
    Fill in your Supabase project details in `.env.local`.
 
-3. **Run development server:**
+3. **Set up artist configuration**
+
+Customize `src/lib/config.ts` according to the artist's information.
+
+4. **Run development server:**
    ```bash
    npm run dev
    ```

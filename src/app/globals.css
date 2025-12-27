@@ -24,3 +24,32 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Bio HTML content styling */
+.prose em,
+.prose i {
+  font-style: italic;
+}
+
+.prose strong,
+.prose b {
+  font-weight: 600;
+}
+
+.prose a {
+  color: inherit;
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+
+.prose a:hover {
+  opacity: 0.6;
+}
+
+.prose p {
+  margin-bottom: 1em;
+}
+
+.prose p:last-child {
+  margin-bottom: 0;
+}
