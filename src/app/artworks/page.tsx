@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { Shell } from '@/components/layout/Shell'
-import { createServerClient, getArtworks } from '@/lib/supabase'
+import { createServerClient, getArtworks, getCV } from '@/lib/supabase'
 import { ArtworksGrid } from '@/components/artworks/ArtworksGrid'
 import { ArtworksGridSkeleton } from '@/components/ui/Skeleton'
 import { ErrorMessage } from '@/components/ui/ErrorMessage'
@@ -68,8 +68,17 @@ export default async function ArtworksPage({
     ? `Artworks > ${filterMedium === 'Painting' ? 'Paintings' : filterMedium === 'Work on Paper' ? 'Works on Paper' : 'Sculpture'}`
     : 'Artworks'
 
+  let cv = null
+  try {
+    const supabase = await createServerClient()
+    cv = await getCV(supabase)
+  } catch (error) {
+    console.error('Failed to fetch CV:', error)
+    // Continue with null cv
+  }
+
   return (
-    <Shell>
+    <Shell cv={cv}>
       <div className="p-6 md:p-12">
         <h1 className="text-3xl font-light mb-8">{pageTitle}</h1>
         <Suspense fallback={<ArtworksGridSkeleton />}>

@@ -65,6 +65,14 @@ CREATE TABLE bio (
   updated_at timestamp with time zone DEFAULT now()
 );
 
+-- Create cv table
+CREATE TABLE cv (
+  id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+  cv_link text NOT NULL,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now()
+);
+
 -- Create indexes for performance
 CREATE INDEX idx_artworks_medium ON artworks(medium);
 CREATE INDEX idx_artworks_created_at ON artworks(created_at);
@@ -86,6 +94,11 @@ CREATE TRIGGER update_artworks_updated_at
 
 CREATE TRIGGER update_bio_updated_at
     BEFORE UPDATE ON bio
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_cv_updated_at
+    BEFORE UPDATE ON cv
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 ```
@@ -110,6 +123,7 @@ Enable RLS and create policies:
 -- Enable RLS on tables
 ALTER TABLE artworks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE bio ENABLE ROW LEVEL SECURITY;
+ALTER TABLE cv ENABLE ROW LEVEL SECURITY;
 
 -- Artworks policies
 CREATE POLICY "Allow anonymous read access on artworks"
@@ -140,6 +154,27 @@ USING (true);
 
 CREATE POLICY "Allow authenticated users to update bio"
 ON bio FOR UPDATE
+TO authenticated
+USING (true);
+
+-- CV policies
+CREATE POLICY "Allow anonymous read access on cv"
+ON cv FOR SELECT
+TO anon, authenticated
+USING (true);
+
+CREATE POLICY "Allow authenticated users to insert cv"
+ON cv FOR INSERT
+TO authenticated
+WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated users to update cv"
+ON cv FOR UPDATE
+TO authenticated
+USING (true);
+
+CREATE POLICY "Allow authenticated users to delete cv"
+ON cv FOR DELETE
 TO authenticated
 USING (true);
 ```
@@ -183,6 +218,45 @@ CREATE POLICY "Allow authenticated users to delete artwork images"
 ON storage.objects FOR DELETE
 TO authenticated
 USING (bucket_id = 'artworks');
+```
+
+### CV Bucket Setup
+
+1. Go to Storage in the Supabase dashboard
+2. Click "New bucket"
+3. Name: `CV`
+4. Set as public bucket: **Yes**
+5. Restrict MIME types to `application/pdf`
+6. Click "Create bucket"
+
+### CV Bucket Policies
+
+Click the CV bucket → Policies (top right), then create these policies with 'Create a policy from scratch':
+
+```sql
+-- Allow public read access to CV files
+CREATE POLICY "Give anon users access to CV files"
+ON storage.objects FOR SELECT
+TO anon
+USING (bucket_id = 'CV');
+
+-- Allow authenticated users to upload CV files
+CREATE POLICY "Allow authenticated users to upload CV files"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'CV');
+
+-- Allow authenticated users to update CV files
+CREATE POLICY "Allow authenticated users to update CV files"
+ON storage.objects FOR UPDATE
+TO authenticated
+USING (bucket_id = 'CV');
+
+-- Allow authenticated users to delete CV files
+CREATE POLICY "Allow authenticated users to delete CV files"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (bucket_id = 'CV');
 ```
 
 ## 6. Authentication Setup

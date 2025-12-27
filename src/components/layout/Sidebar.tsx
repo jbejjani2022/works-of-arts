@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { ARTIST_CONFIG } from '@/lib/config'
+import type { CV } from '@/lib/types'
 
 interface SidebarProps {
   isOpen: boolean
@@ -11,6 +12,7 @@ interface SidebarProps {
   showMenuIcon?: boolean
   onNavigateHome?: () => void
   alwaysVisibleOnDesktop?: boolean
+  cv?: CV | null
 }
 
 export function Sidebar({
@@ -19,6 +21,7 @@ export function Sidebar({
   showMenuIcon = false,
   onNavigateHome,
   alwaysVisibleOnDesktop = true,
+  cv = null,
 }: SidebarProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -147,6 +150,17 @@ export function Sidebar({
 
           {/* Social links at bottom */}
           <div className="mt-auto pt-6 flex items-center gap-4">
+            {cv && (
+              <a
+                href={cv.cv_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-black hover:opacity-60 transition-opacity cursor-pointer"
+                aria-label="CV"
+              >
+                CV
+              </a>
+            )}
             {ARTIST_CONFIG.social.instagram && (
               <a
                 href={`https://instagram.com/${ARTIST_CONFIG.social.instagram.replace(/^@/, '')}`}

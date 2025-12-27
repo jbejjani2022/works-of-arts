@@ -1,15 +1,16 @@
 import Image from 'next/image'
 import { Shell } from '@/components/layout/Shell'
-import { createServerClient, getBio } from '@/lib/supabase'
+import { createServerClient, getBio, getCV } from '@/lib/supabase'
 import { ARTIST_CONFIG } from '@/lib/config'
 import { AboutSkeleton } from '@/components/ui/Skeleton'
 import { ErrorMessage } from '@/components/ui/ErrorMessage'
 import { Suspense } from 'react'
+import type { CV } from '@/lib/types'
 
 // Revalidate every 5 minutes
 export const revalidate = 300
 
-async function AboutContent() {
+async function AboutContent({ cv }: { cv: CV | null }) {
   try {
     const supabase = await createServerClient()
     const bio = await getBio(supabase)
@@ -38,11 +39,23 @@ async function AboutContent() {
 
           {/* Contact information */}
           <div className="text-base space-y-1">
+            {cv && (
+              <div>
+                <a
+                  href={cv.cv_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-black hover:opacity-60 transition-opacity cursor-pointer underline"
+                >
+                  CV
+                </a>
+              </div>
+            )}
             {ARTIST_CONFIG.social.email && (
               <div>
                 <a
                   href={`mailto:${ARTIST_CONFIG.social.email}`}
-                  className="text-black hover:opacity-60 transition-opacity cursor-pointer"
+                  className="text-black hover:opacity-60 transition-opacity cursor-pointer underline"
                 >
                   {ARTIST_CONFIG.social.email}
                 </a>
@@ -54,7 +67,7 @@ async function AboutContent() {
                   href={`https://instagram.com/${ARTIST_CONFIG.social.instagram.replace(/^@/, '')}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-black hover:opacity-60 transition-opacity cursor-pointer"
+                  className="text-black hover:opacity-60 transition-opacity cursor-pointer underline"
                 >
                   {ARTIST_CONFIG.social.instagram}
                 </a>
@@ -81,13 +94,23 @@ async function AboutContent() {
   }
 }
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  let cv = null
+
+  try {
+    const supabase = await createServerClient()
+    cv = await getCV(supabase)
+  } catch (error) {
+    console.error('Failed to fetch CV:', error)
+    // Continue with null cv
+  }
+
   return (
-    <Shell>
+    <Shell cv={cv}>
       <div className="p-6 md:p-12 max-w-7xl mx-auto">
         <h1 className="text-3xl font-light mb-8">About</h1>
         <Suspense fallback={<AboutSkeleton />}>
-          <AboutContent />
+          <AboutContent cv={cv} />
         </Suspense>
       </div>
     </Shell>

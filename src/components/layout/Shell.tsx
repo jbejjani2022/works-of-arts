@@ -2,16 +2,18 @@
 
 import { useState, Suspense } from 'react'
 import { Sidebar } from './Sidebar'
+import type { CV } from '@/lib/types'
 
 interface ShellProps {
   children: React.ReactNode
+  cv?: CV | null
 }
 
 /**
  * Shell component for pages with always-visible sidebar (About, Artworks).
  * On mobile, sidebar can be toggled. On desktop, it's always visible.
  */
-export function Shell({ children }: ShellProps) {
+export function Shell({ children, cv = null }: ShellProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const toggleSidebar = () => {
@@ -26,6 +28,7 @@ export function Shell({ children }: ShellProps) {
           isOpen={isSidebarOpen}
           onToggle={toggleSidebar}
           showMenuIcon={false}
+          cv={cv}
         />
       </Suspense>
 

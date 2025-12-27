@@ -4,6 +4,7 @@ import type { Database } from './database.types'
 type TypedSupabaseClient = SupabaseClient<Database>
 
 const ARTWORKS_BUCKET = 'artworks'
+const CV_BUCKET = 'CV'
 
 /**
  * Upload an artwork image to Supabase Storage
@@ -102,6 +103,110 @@ export async function listArtworkImages(
 
   if (error) {
     throw new Error(`Failed to list images: ${error.message}`)
+  }
+
+  return data
+}
+
+// ============================================================================
+// CV Storage Helpers
+// ============================================================================
+
+/**
+ * Upload a CV PDF to Supabase Storage
+ * Returns the public URL of the uploaded PDF
+ */
+export async function uploadCV(
+  supabase: TypedSupabaseClient,
+  file: File,
+  options?: {
+    fileName?: string
+  }
+): Promise<string> {
+  // Validate file type
+  if (file.type !== 'application/pdf') {
+    throw new Error('Only PDF files are allowed for CV uploads')
+  }
+
+  // Generate a unique filename if not provided
+  const timestamp = Date.now()
+  const randomString = Math.random().toString(36).substring(2, 15)
+  const fileName = options?.fileName || `cv-${timestamp}-${randomString}.pdf`
+
+  // Upload file to storage
+  const { data, error } = await supabase.storage
+    .from(CV_BUCKET)
+    .upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false,
+    })
+
+  if (error) {
+    throw new Error(`Failed to upload CV: ${error.message}`)
+  }
+
+  // Get public URL
+  const { data: urlData } = supabase.storage
+    .from(CV_BUCKET)
+    .getPublicUrl(data.path)
+
+  return urlData.publicUrl
+}
+
+/**
+ * Delete a CV PDF from Supabase Storage
+ */
+export async function deleteCV(
+  supabase: TypedSupabaseClient,
+  cvUrl: string
+): Promise<void> {
+  // Extract the file path from the URL
+  // URL format: https://<project>.supabase.co/storage/v1/object/public/CV/<filename>
+  const urlParts = cvUrl.split('/')
+  const fileName = urlParts[urlParts.length - 1]
+
+  if (!fileName) {
+    throw new Error('Invalid CV URL')
+  }
+
+  const { error } = await supabase.storage.from(CV_BUCKET).remove([fileName])
+
+  if (error) {
+    throw new Error(`Failed to delete CV: ${error.message}`)
+  }
+}
+
+/**
+ * Get the public URL for a CV PDF
+ */
+export function getCVUrl(
+  supabase: TypedSupabaseClient,
+  filePath: string
+): string {
+  const { data } = supabase.storage.from(CV_BUCKET).getPublicUrl(filePath)
+
+  return data.publicUrl
+}
+
+/**
+ * List all CV files in the bucket
+ */
+export async function listCVFiles(
+  supabase: TypedSupabaseClient,
+  options?: {
+    limit?: number
+    offset?: number
+    sortBy?: { column: string; order: 'asc' | 'desc' }
+  }
+) {
+  const { data, error } = await supabase.storage.from(CV_BUCKET).list('', {
+    limit: options?.limit || 100,
+    offset: options?.offset || 0,
+    sortBy: options?.sortBy || { column: 'created_at', order: 'desc' },
+  })
+
+  if (error) {
+    throw new Error(`Failed to list CV files: ${error.message}`)
   }
 
   return data

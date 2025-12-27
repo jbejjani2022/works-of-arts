@@ -5,13 +5,14 @@ import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { SidebarToggle } from '@/components/layout/SidebarToggle'
-import type { Artwork } from '@/lib/types'
+import type { Artwork, CV } from '@/lib/types'
 
 interface HomeClientProps {
   artwork: Artwork | null
+  cv?: CV | null
 }
 
-export function HomeClient({ artwork }: HomeClientProps) {
+export function HomeClient({ artwork, cv = null }: HomeClientProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const pathname = usePathname()
 
@@ -63,6 +64,7 @@ export function HomeClient({ artwork }: HomeClientProps) {
           showMenuIcon={false}
           onNavigateHome={closeSidebar}
           alwaysVisibleOnDesktop={false}
+          cv={cv}
         />
       </Suspense>
 

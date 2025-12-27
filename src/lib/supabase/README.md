@@ -56,7 +56,17 @@ const bio = await getBio(supabase)
 
 - **`updateBio(supabase, id, updates)`** - Update the bio content
 
+### CV
+
+- **`getCV(supabase)`** - Fetch the current CV link (returns null if no CV exists)
+
+- **`updateCV(supabase, id, updates)`** - Update an existing CV record
+
+- **`createCV(supabase, cvLink)`** - Create a new CV record (use when no CV exists yet)
+
 ## Storage Helpers
+
+### Artwork Images
 
 - **`uploadArtworkImage(supabase, file, options?)`** - Upload an image to storage
   - Returns the public URL of the uploaded image
@@ -65,6 +75,17 @@ const bio = await getBio(supabase)
 - **`getArtworkImageUrl(supabase, filePath)`** - Get public URL for an image
 
 - **`listArtworkImages(supabase, options?)`** - List all artwork images
+
+### CV Files
+
+- **`uploadCV(supabase, file, options?)`** - Upload a PDF CV to storage
+  - Returns the public URL of the uploaded PDF
+  - Validates that the file is a PDF
+- **`deleteCV(supabase, cvUrl)`** - Delete a CV PDF from storage
+
+- **`getCVUrl(supabase, filePath)`** - Get public URL for a CV PDF
+
+- **`listCVFiles(supabase, options?)`** - List all CV files in the bucket
 
 ## Type Generation
 
@@ -143,6 +164,39 @@ async function handleSubmit(formData: FormData) {
   })
 
   return artwork
+}
+```
+
+### Upload and Update CV
+
+```typescript
+import {
+  createBrowserClient,
+  uploadCV,
+  getCV,
+  updateCV,
+  createCV,
+} from '@/lib/supabase'
+
+async function handleCVUpload(formData: FormData) {
+  const supabase = createBrowserClient()
+  const file = formData.get('cv') as File
+
+  // Upload CV PDF
+  const cvUrl = await uploadCV(supabase, file)
+
+  // Check if CV record exists
+  const existingCV = await getCV(supabase)
+
+  if (existingCV) {
+    // Update existing CV record
+    await updateCV(supabase, existingCV.id, { cv_link: cvUrl })
+  } else {
+    // Create new CV record
+    await createCV(supabase, cvUrl)
+  }
+
+  return cvUrl
 }
 ```
 

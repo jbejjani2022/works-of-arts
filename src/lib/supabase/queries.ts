@@ -6,6 +6,8 @@ import type {
   ArtworkUpdate,
   Bio,
   BioUpdate,
+  CV,
+  CVUpdate,
   ArtworkMedium,
 } from '../types'
 
@@ -180,4 +182,72 @@ export async function updateBio(
   }
 
   return data as Bio
+}
+
+// ============================================================================
+// CV Queries
+// ============================================================================
+
+/**
+ * Fetch the current CV link (assumes single row)
+ */
+export async function getCV(supabase: TypedSupabaseClient) {
+  const { data, error } = await supabase
+    .from('cv')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single()
+
+  if (error) {
+    // Return null if no CV exists yet
+    if (error.code === 'PGRST116') {
+      return null
+    }
+    throw new Error(`Failed to fetch CV: ${error.message}`)
+  }
+
+  return data as CV
+}
+
+/**
+ * Update the CV link
+ */
+export async function updateCV(
+  supabase: TypedSupabaseClient,
+  id: string,
+  updates: CVUpdate
+) {
+  const { data, error } = await supabase
+    .from('cv')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) {
+    throw new Error(`Failed to update CV: ${error.message}`)
+  }
+
+  return data as CV
+}
+
+/**
+ * Create a new CV record (use when no CV exists yet)
+ */
+export async function createCV(
+  supabase: TypedSupabaseClient,
+  cvLink: string
+) {
+  const { data, error } = await supabase
+    .from('cv')
+    .insert({ cv_link: cvLink })
+    .select()
+    .single()
+
+  if (error) {
+    throw new Error(`Failed to create CV: ${error.message}`)
+  }
+
+  return data as CV
 }

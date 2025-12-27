@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Shell } from '@/components/layout/Shell'
-import { createServerClient, getArtworkById } from '@/lib/supabase'
+import { createServerClient, getArtworkById, getCV } from '@/lib/supabase'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { ImageZoomModal } from '@/components/artworks/ImageZoomModal'
 import type { ArtworkMedium } from '@/lib/types'
@@ -203,8 +203,17 @@ export default async function ArtworkDetailPage({
       ? mediumParam
       : null
 
+  let cv = null
+  try {
+    const supabase = await createServerClient()
+    cv = await getCV(supabase)
+  } catch (error) {
+    console.error('Failed to fetch CV:', error)
+    // Continue with null cv
+  }
+
   return (
-    <Shell>
+    <Shell cv={cv}>
       <div className="p-4 md:p-12 min-h-[calc(100vh-4rem)] flex flex-col justify-center">
         <Suspense
           fallback={
