@@ -40,6 +40,9 @@ export async function getArtworks(
   const ascending = options?.ascending ?? false
   query = query.order(orderBy, { ascending })
 
+  // Always add secondary ordering by updated_at (most recent first)
+  query = query.order('updated_at', { ascending: false })
+
   const { data, error } = await query
 
   if (error) {

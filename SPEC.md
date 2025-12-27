@@ -12,11 +12,11 @@ Project description: Minimal, modern, responsive website for an artist's portfol
 ### Backend & data
 
 - **Supabase**:
-  - **PostgreSQL** for `artworks` and `bio` tables.
+  - **PostgreSQL** for `artworks`, `bio`, and `cv` tables.
   - **Supabase Auth** for artist login (email/password).
-  - **Supabase Storage** for artwork images.
+  - **Supabase Storage** for artwork images and CV PDFs.
   - **Row Level Security (RLS)**:
-    - Anonymous read access for public content (artworks, bio).
+    - Anonymous read access for public content (artworks, bio, cv).
     - Authenticated-only write access.
 
 ### Deployment & hosting
@@ -29,7 +29,9 @@ Project description: Minimal, modern, responsive website for an artist's portfol
   - Separate project with:
     - `artworks` table
     - `bio` table
+    - `cv` table
     - `artworks` storage bucket
+    - `CV` storage bucket
 
 ### Key dependencies
 
@@ -84,6 +86,17 @@ Columns:
 - `content`: `text` (required)
 - `updated_at`: `timestamp with time zone` (default `now()`)
 
+#### `cv`
+
+Columns:
+
+- `id`: `uuid` (primary key)
+- `cv_link`: `text` (required; public URL from Supabase Storage pointing to CV PDF)
+- `created_at`: `timestamp with time zone` (default `now()`)
+- `updated_at`: `timestamp with time zone` (default `now()`, updated on change)
+
+**Note:** In practice, only one CV record should exist at a time (most recent). When replacing the CV, update the existing record rather than creating a new one.
+
 ### Auth
 
 - Supabase Auth with **email/password**.
@@ -97,6 +110,10 @@ Columns:
     - `SELECT`: allow `anon`.
     - `UPDATE`: allow authenticated users.
 
+  - `cv`:
+    - `SELECT`: allow `anon` and `authenticated` (public read).
+    - `INSERT/UPDATE/DELETE`: allow only authenticated users.
+
 ### Storage
 
 - Bucket: `artworks`
@@ -108,6 +125,17 @@ Columns:
   2. Client calls Supabase Storage to upload (`supabase.storage.from('artworks').upload(path, file)`).
   3. Get public URL via `getPublicUrl(path)`.
   4. Save URL to `image_url` field in `artworks` table.
+
+- Bucket: `CV`
+  - Public bucket for CV PDF files.
+  - MIME type restriction: `application/pdf` only.
+
+- Upload flow:
+  1. Admin uploads CV PDF via `/admin` form.
+  2. Client calls Supabase Storage to upload (`supabase.storage.from('CV').upload(path, file)`).
+  3. Get public URL via `getPublicUrl(path)`.
+  4. Save URL to `cv_link` field in `cv` table (update existing record or create new if none exists).
+  5. If replacing an existing CV, optionally delete the old PDF file from storage.
 
 ---
 
@@ -149,6 +177,7 @@ Example file/folder layout:
 │  │   ├─ ArtworksTable.tsx
 │  │   ├─ ArtworkForm.tsx       # Create/edit form
 │  │   ├─ BioEditor.tsx
+│  │   ├─ CVManager.tsx         # CV upload/replace component
 │  │   └─ ConfirmDialog.tsx     # Reusable delete confirmation
 │  └─ ui/
 │      ├─ Button.tsx
@@ -385,6 +414,7 @@ The admin area will consist of:
 - Main area:
   - Section 1: Artworks table + upload button.
   - Section 2: Bio editor.
+  - Section 3: CV manager.
 
 ##### Section 1: Artworks table
 
@@ -476,7 +506,48 @@ Units for height, width, length are inches.
 
 **Implementation notes:**
 
-- Simple `textarea` is sufficient for “minimal about page”.
+- Simple `textarea` is sufficient for "minimal about page".
+
+##### Section 3: CV manager
+
+**Requirements:**
+
+- Display current CV status:
+  - **If CV exists:**
+    - Show CV file name or "CV" label with a link to open it in a new tab.
+    - Display "Last updated: <formatted date>" (using `updated_at` from the `cv` table).
+    - Provide "Replace CV" button to upload a new PDF.
+
+  - **If no CV exists:**
+    - Display message: "No CV uploaded yet."
+    - Provide "Upload CV" button to upload the first PDF.
+
+**Upload/Replace flow:**
+
+1. User clicks "Upload CV" or "Replace CV" button.
+2. File input dialog opens (accepts only `.pdf` files).
+3. User selects a PDF file.
+4. On submission:
+   - Upload PDF to Supabase Storage (`CV` bucket).
+   - Get public URL of uploaded PDF.
+   - **If CV record exists:**
+     - Update existing `cv` record with new `cv_link` and `updated_at`.
+     - Optionally: delete old PDF file from storage bucket.
+   - **If no CV record exists:**
+     - Create new `cv` record with `cv_link` pointing to uploaded PDF.
+5. Display success message and refresh CV status display.
+
+**Validation:**
+
+- File type: Must be PDF (MIME type: `application/pdf`).
+- File size: Reasonable limit (e.g., max 10MB).
+
+**Implementation notes:**
+
+- CV manager will be a **client component**.
+- Uses Supabase client (`lib/supabase/client.ts`) directly:
+  - RLS ensures only the logged-in artist can modify data.
+- Use existing CV query/storage helpers from `lib/supabase/queries.ts` and `lib/supabase/storage.ts`.
 
 ---
 

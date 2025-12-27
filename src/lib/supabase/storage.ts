@@ -18,12 +18,17 @@ export async function uploadArtworkImage(
     onProgress?: (progress: number) => void
   }
 ): Promise<string> {
-  // Generate a unique filename if not provided
-  const timestamp = Date.now()
-  const randomString = Math.random().toString(36).substring(2, 15)
-  const fileExt = file.name.split('.').pop()
-  const fileName =
-    options?.fileName || `${timestamp}-${randomString}.${fileExt}`
+  // Use original filename with timestamp prefix for uniqueness
+  // This preserves the user's original filename while avoiding conflicts
+  let fileName: string
+  if (options?.fileName) {
+    fileName = options.fileName
+  } else {
+    const timestamp = Date.now()
+    // Clean the original filename: remove spaces and special chars except dash, underscore, and dot
+    const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+    fileName = `${timestamp}-${cleanName}`
+  }
 
   // Upload file to storage
   const { data, error } = await supabase.storage

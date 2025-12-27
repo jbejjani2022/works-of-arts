@@ -139,12 +139,16 @@ The product requirements live in: SPEC.md (source of truth).
 
 ### ⏳ Step 6: Admin CMS Functionality
 
-**Goal**: Full CRUD operations for artworks and bio editing
+**Goal**: Full CRUD operations for artworks, bio editing, and CV management
 **Success Criteria**:
 
 - Can create, edit, delete artworks
 - Image upload to Supabase Storage works
 - Bio editor saves content
+- CV manager displays current CV (if exists) with last updated time
+- Can upload new CV or replace existing CV
+- CV PDF uploads to Supabase Storage `CV` bucket
+- CV link updates in database when new file is uploaded
 
 ### ⏳ Step 7: Polish & Production Readiness
 

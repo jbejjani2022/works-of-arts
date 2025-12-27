@@ -34,6 +34,7 @@ async function ArtworkDetail({
       .from('artworks')
       .select('id, medium')
       .order('year', { ascending: false })
+      .order('updated_at', { ascending: false })
 
     if (allArtworks.error) throw allArtworks.error
 
