@@ -15,7 +15,6 @@ interface GenerateMetadataParams {
 export function generateMetadata({
   title,
   description = ARTIST_CONFIG.bioFallback,
-  image = ARTIST_CONFIG.photoUrl,
   path = '',
 }: GenerateMetadataParams = {}): Metadata {
   const siteName = ARTIST_CONFIG.name
