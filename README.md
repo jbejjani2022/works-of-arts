@@ -46,7 +46,7 @@ This is a Next.js application that serves as an artist's portfolio website with:
 
 3. **Set up artist configuration**
 
-   Customize `src/lib/config.ts` according to the artist's information (name, bio fallback, social links).
+   Customize [`src/lib/config.ts`](src/lib/config.ts) according to the artist's information (name, bio fallback, social links).
 
 4. **Set up database and storage**
 

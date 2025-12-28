@@ -98,19 +98,19 @@ export type Database = {
       headshot: {
         Row: {
           created_at: string | null
-          headshot_url: string
+          headshot_link: string
           id: string
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
-          headshot_url: string
+          headshot_link: string
           id?: string
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
-          headshot_url?: string
+          headshot_link?: string
           id?: string
           updated_at?: string | null
         }
