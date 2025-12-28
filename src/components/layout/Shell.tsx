@@ -21,7 +21,7 @@ export function Shell({ children, cv = null }: ShellProps) {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-white">
       {/* Sidebar - always rendered, responsive behavior handled within */}
       <Suspense fallback={<div className="w-64" />}>
         <Sidebar
@@ -33,7 +33,7 @@ export function Shell({ children, cv = null }: ShellProps) {
       </Suspense>
 
       {/* Main content */}
-      <main className="flex-1">
+      <main className="flex-1 bg-white">
         {/* Mobile menu toggle button - only visible on mobile when sidebar is closed */}
         {!isSidebarOpen && (
           <button

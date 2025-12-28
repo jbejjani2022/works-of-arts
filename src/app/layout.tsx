@@ -15,7 +15,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" style={{ colorScheme: 'light' }}>
+      <head>
+        <meta name="color-scheme" content="light" />
+      </head>
       <body className={`${inter.className} bg-white text-black antialiased`}>
         {children}
         <Analytics />
