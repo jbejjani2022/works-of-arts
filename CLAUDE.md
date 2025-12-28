@@ -128,7 +128,7 @@ The product requirements live in: SPEC.md (source of truth).
 - **Mobile Optimized** - All pages fully responsive with touch-friendly interactions
 - TypeScript passes, tests pass, code formatted
 
-### ⏳ Step 5: Admin Authentication & Layout [NEXT]
+### ⏳ Step 5: Admin Authentication & Layout [COMPLETE]
 
 **Goal**: Implement secure admin area with authentication
 **Success Criteria**:
@@ -137,18 +137,18 @@ The product requirements live in: SPEC.md (source of truth).
 - Admin pages are auth-protected
 - Admin shell layout implemented
 
-### ⏳ Step 6: Admin CMS Functionality
+### ⏳ Step 6: Admin CMS Functionality [IN PROGRESS]
 
 **Goal**: Full CRUD operations for artworks, bio editing, and CV management
 **Success Criteria**:
 
-- Can create, edit, delete artworks
-- Image upload to Supabase Storage works
-- Bio editor saves content
-- CV manager displays current CV (if exists) with last updated time
-- Can upload new CV or replace existing CV
-- CV PDF uploads to Supabase Storage `CV` bucket
-- CV link updates in database when new file is uploaded
+- ✅ Can create, edit, delete artworks
+- ✅ Image upload to Supabase Storage works
+- ✅ Bio editor saves content with rich text formatting (Bold, Italic, Underline, Headings, Lists, Links)
+- ⏳ CV manager displays current CV (if exists) with last updated time
+- ⏳ Can upload new CV or replace existing CV
+- ⏳ CV PDF uploads to Supabase Storage `CV` bucket
+- ⏳ CV link updates in database when new file is uploaded
 
 ### ⏳ Step 7: Polish & Production Readiness
 

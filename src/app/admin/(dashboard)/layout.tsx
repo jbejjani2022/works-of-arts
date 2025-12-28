@@ -21,7 +21,7 @@ export default async function AdminLayout({
       <header className="border-b border-gray-200">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <h1 className="text-2xl font-light">
-            Hi, artist. Let's show the world your work.
+            Hi, artist. Let's show the world your works.
           </h1>
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-600">{user.email}</span>
