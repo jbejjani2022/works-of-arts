@@ -251,3 +251,17 @@ export async function createCV(supabase: TypedSupabaseClient, cvLink: string) {
 
   return data as CV
 }
+
+/**
+ * Delete a CV record
+ */
+export async function deleteCVRecord(
+  supabase: TypedSupabaseClient,
+  id: string
+) {
+  const { error } = await supabase.from('cv').delete().eq('id', id)
+
+  if (error) {
+    throw new Error(`Failed to delete CV record: ${error.message}`)
+  }
+}

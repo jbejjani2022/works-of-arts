@@ -146,7 +146,7 @@ The product requirements live in: SPEC.md (source of truth).
 - ✅ Image upload to Supabase Storage works
 - ✅ Bio editor saves content with rich text formatting (Bold, Italic, Underline, Headings, Lists, Links)
 - ⏳ CV manager displays current CV (if exists) with last updated time
-- ⏳ Can upload new CV or replace existing CV
+- ⏳ Can upload new CV (if one doesn't already exist) or replace existing CV
 - ⏳ CV PDF uploads to Supabase Storage `CV` bucket
 - ⏳ CV link updates in database when new file is uploaded
 
