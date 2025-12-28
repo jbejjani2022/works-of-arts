@@ -16,8 +16,8 @@ This is a Next.js application that serves as an artist's portfolio website with:
 
 ## Features
 
-- **Public Portfolio**: Hero homepage, about page, filterable artworks gallery
-- **Admin CMS**: Authentication-protected interface for managing artworks and bio
+- **Public Portfolio**: Hero homepage, about page with artist headshot, filterable artworks gallery
+- **Admin CMS**: Authentication-protected interface for managing artworks, bio, headshot, and CV
 - **Responsive Design**: Mobile-first design that works on all devices
 - **Modern Stack**: Next.js 14 with App Router, TypeScript, Tailwind CSS, and Supabase
 
@@ -46,9 +46,18 @@ This is a Next.js application that serves as an artist's portfolio website with:
 
 3. **Set up artist configuration**
 
-Customize `src/lib/config.ts` according to the artist's information.
+   Customize `src/lib/config.ts` according to the artist's information (name, bio fallback, social links).
 
-4. **Run development server:**
+4. **Set up database and storage**
+
+   Follow the instructions in [docs/supabase-setup.md](docs/supabase-setup.md) to create the database tables and storage buckets.
+
+   After setting up the database, run the migration to add the headshots table:
+   ```bash
+   # See docs/migrations/001_add_headshots_table.sql for SQL to run in Supabase
+   ```
+
+5. **Run development server:**
    ```bash
    npm run dev
    ```

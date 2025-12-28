@@ -73,6 +73,14 @@ CREATE TABLE cv (
   updated_at timestamp with time zone DEFAULT now()
 );
 
+-- Create headshot table
+CREATE TABLE headshot (
+  id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+  headshot_link text NOT NULL,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now()
+);
+
 -- Create indexes for performance
 CREATE INDEX idx_artworks_medium ON artworks(medium);
 CREATE INDEX idx_artworks_created_at ON artworks(created_at);
@@ -101,6 +109,11 @@ CREATE TRIGGER update_cv_updated_at
     BEFORE UPDATE ON cv
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_headshot_updated_at
+    BEFORE UPDATE ON headshot
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
 ```
 
 ### Insert Initial Bio
@@ -124,6 +137,7 @@ Enable RLS and create policies:
 ALTER TABLE artworks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE bio ENABLE ROW LEVEL SECURITY;
 ALTER TABLE cv ENABLE ROW LEVEL SECURITY;
+ALTER TABLE headshot ENABLE ROW LEVEL SECURITY;
 
 -- Artworks policies
 CREATE POLICY "Allow anonymous read access on artworks"
@@ -175,6 +189,27 @@ USING (true);
 
 CREATE POLICY "Allow authenticated users to delete cv"
 ON cv FOR DELETE
+TO authenticated
+USING (true);
+
+-- Headshot policies
+CREATE POLICY "Allow anonymous read access on headshot"
+ON headshot FOR SELECT
+TO anon, authenticated
+USING (true);
+
+CREATE POLICY "Allow authenticated users to insert headshot"
+ON headshot FOR INSERT
+TO authenticated
+WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated users to update headshot"
+ON headshot FOR UPDATE
+TO authenticated
+USING (true);
+
+CREATE POLICY "Allow authenticated users to delete headshot"
+ON headshot FOR DELETE
 TO authenticated
 USING (true);
 ```
@@ -258,6 +293,8 @@ ON storage.objects FOR DELETE
 TO authenticated
 USING (bucket_id = 'CV');
 ```
+
+### Do the same for the headshot bucket
 
 ## 6. Authentication Setup
 

@@ -50,9 +50,9 @@ export const artworkSchema = z
       .refine(
         (file) => {
           if (!file) return true // Allow null/undefined
-          return file.size <= 10 * 1024 * 1024 // 10MB
+          return file.size <= 50 * 1024 * 1024 // 50MB
         },
-        { message: 'Image must be less than 10MB' }
+        { message: 'Image must be less than 50MB' }
       )
       .optional()
       .nullable(),

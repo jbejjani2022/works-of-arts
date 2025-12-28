@@ -12,22 +12,6 @@ export const ARTIST_CONFIG = {
   name: 'Marcella Vlahos',
 
   /**
-   * Artist photo URL for the About page
-   *
-   * Update this URL to point to your artist's photo.
-   * Recommended dimensions: At least 800x1000px (portrait orientation)
-   * Format: JPG or PNG
-   *
-   * Current URL points to Supabase Storage.
-   * To update:
-   * 1. Upload new photo to Supabase Storage (artworks bucket)
-   * 2. Copy the public URL
-   * 3. Replace the URL below
-   */
-  photoUrl:
-    'https://xixlzbehrgmrbcakbjqv.supabase.co/storage/v1/object/public/artworks/About_page_photo.png',
-
-  /**
    * Artist bio/description
    * This is a fallback if no bio is found in the database
    */

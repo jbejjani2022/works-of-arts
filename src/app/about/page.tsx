@@ -1,11 +1,11 @@
 import Image from 'next/image'
 import { Shell } from '@/components/layout/Shell'
-import { createServerClient, getBio, getCV } from '@/lib/supabase'
+import { createServerClient, getBio, getCV, getHeadshot } from '@/lib/supabase'
 import { ARTIST_CONFIG } from '@/lib/config'
 import { AboutSkeleton } from '@/components/ui/Skeleton'
 import { ErrorMessage } from '@/components/ui/ErrorMessage'
 import { Suspense } from 'react'
-import type { CV } from '@/lib/types'
+import type { CV, Headshot } from '@/lib/types'
 import { generateMetadata as genMetadata } from '@/lib/metadata'
 
 // Revalidate every 5 minutes
@@ -16,7 +16,13 @@ export const metadata = genMetadata({
   path: '/about',
 })
 
-async function AboutContent({ cv }: { cv: CV | null }) {
+async function AboutContent({
+  cv,
+  headshot,
+}: {
+  cv: CV | null
+  headshot: Headshot | null
+}) {
   const supabase = await createServerClient()
   const bio = await getBio(supabase)
 
@@ -33,14 +39,20 @@ async function AboutContent({ cv }: { cv: CV | null }) {
     <div className="grid md:grid-cols-2 gap-8 md:gap-12">
       {/* Artist photo */}
       <div className="relative aspect-[3/4] w-full">
-        <Image
-          src={ARTIST_CONFIG.photoUrl}
-          alt={ARTIST_CONFIG.name}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, 50vw"
-          priority
-        />
+        {headshot?.headshot_link ? (
+          <Image
+            src={headshot.headshot_link}
+            alt={ARTIST_CONFIG.name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            priority
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center bg-gray-100">
+            <p className="text-gray-400">No headshot uploaded</p>
+          </div>
+        )}
       </div>
 
       {/* Bio content */}
@@ -101,13 +113,14 @@ async function AboutContent({ cv }: { cv: CV | null }) {
 
 export default async function AboutPage() {
   let cv = null
+  let headshot = null
 
   try {
     const supabase = await createServerClient()
-    cv = await getCV(supabase)
+    ;[cv, headshot] = await Promise.all([getCV(supabase), getHeadshot(supabase)])
   } catch (error) {
-    console.error('Failed to fetch CV:', error)
-    // Continue with null cv
+    console.error('Failed to fetch CV or headshot:', error)
+    // Continue with null values
   }
 
   return (
@@ -115,7 +128,7 @@ export default async function AboutPage() {
       <div className="p-6 md:p-12 max-w-7xl mx-auto">
         <h1 className="text-3xl font-light mb-8">About</h1>
         <Suspense fallback={<AboutSkeleton />}>
-          <AboutContent cv={cv} />
+          <AboutContent cv={cv} headshot={headshot} />
         </Suspense>
       </div>
     </Shell>

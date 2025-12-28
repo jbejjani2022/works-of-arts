@@ -8,6 +8,8 @@ import type {
   BioUpdate,
   CV,
   CVUpdate,
+  Headshot,
+  HeadshotUpdate,
   ArtworkMedium,
 } from '../types'
 
@@ -263,5 +265,87 @@ export async function deleteCVRecord(
 
   if (error) {
     throw new Error(`Failed to delete CV record: ${error.message}`)
+  }
+}
+
+// ============================================================================
+// Headshot Queries
+// ============================================================================
+
+/**
+ * Fetch the current headshot (assumes single row)
+ */
+export async function getHeadshot(supabase: TypedSupabaseClient) {
+  const { data, error } = await supabase
+    .from('headshot')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single()
+
+  if (error) {
+    // Return null if no headshot exists yet
+    if (error.code === 'PGRST116') {
+      return null
+    }
+    throw new Error(`Failed to fetch headshot: ${error.message}`)
+  }
+
+  return data as Headshot
+}
+
+/**
+ * Update the headshot link
+ */
+export async function updateHeadshot(
+  supabase: TypedSupabaseClient,
+  id: string,
+  updates: HeadshotUpdate
+) {
+  const { data, error } = await supabase
+    .from('headshot')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) {
+    throw new Error(`Failed to update headshot: ${error.message}`)
+  }
+
+  return data as Headshot
+}
+
+/**
+ * Create a new headshot record (use when no headshot exists yet)
+ */
+export async function createHeadshot(
+  supabase: TypedSupabaseClient,
+  headshotLink: string
+) {
+  const { data, error } = await supabase
+    .from('headshot')
+    .insert({ headshot_link: headshotLink })
+    .select()
+    .single()
+
+  if (error) {
+    throw new Error(`Failed to create headshot: ${error.message}`)
+  }
+
+  return data as Headshot
+}
+
+/**
+ * Delete a headshot record
+ */
+export async function deleteHeadshotRecord(
+  supabase: TypedSupabaseClient,
+  id: string
+) {
+  const { error } = await supabase.from('headshot').delete().eq('id', id)
+
+  if (error) {
+    throw new Error(`Failed to delete headshot record: ${error.message}`)
   }
 }
