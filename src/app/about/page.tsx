@@ -117,7 +117,10 @@ export default async function AboutPage() {
 
   try {
     const supabase = await createServerClient()
-    ;[cv, headshot] = await Promise.all([getCV(supabase), getHeadshot(supabase)])
+    ;[cv, headshot] = await Promise.all([
+      getCV(supabase),
+      getHeadshot(supabase),
+    ])
   } catch (error) {
     console.error('Failed to fetch CV or headshot:', error)
     // Continue with null values

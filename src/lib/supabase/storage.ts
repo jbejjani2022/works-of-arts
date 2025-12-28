@@ -241,7 +241,8 @@ export async function uploadHeadshot(
   // Generate a unique filename if not provided
   const timestamp = Date.now()
   const randomString = Math.random().toString(36).substring(2, 15)
-  const fileName = options?.fileName || `headshot-${timestamp}-${randomString}.png`
+  const fileName =
+    options?.fileName || `headshot-${timestamp}-${randomString}.png`
 
   // Upload file to storage
   const { data, error } = await supabase.storage
@@ -279,7 +280,9 @@ export async function deleteHeadshot(
     throw new Error('Invalid headshot URL')
   }
 
-  const { error } = await supabase.storage.from(HEADSHOT_BUCKET).remove([fileName])
+  const { error } = await supabase.storage
+    .from(HEADSHOT_BUCKET)
+    .remove([fileName])
 
   if (error) {
     throw new Error(`Failed to delete headshot: ${error.message}`)
@@ -309,11 +312,13 @@ export async function listHeadshotFiles(
     sortBy?: { column: string; order: 'asc' | 'desc' }
   }
 ) {
-  const { data, error } = await supabase.storage.from(HEADSHOT_BUCKET).list('', {
-    limit: options?.limit || 100,
-    offset: options?.offset || 0,
-    sortBy: options?.sortBy || { column: 'created_at', order: 'desc' },
-  })
+  const { data, error } = await supabase.storage
+    .from(HEADSHOT_BUCKET)
+    .list('', {
+      limit: options?.limit || 100,
+      offset: options?.offset || 0,
+      sortBy: options?.sortBy || { column: 'created_at', order: 'desc' },
+    })
 
   if (error) {
     throw new Error(`Failed to list headshot files: ${error.message}`)

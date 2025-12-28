@@ -1,10 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import {
-  getArtworks,
-  getBio,
-  getCV,
-  getHeadshot,
-} from '@/lib/supabase/queries'
+import { getArtworks, getBio, getCV, getHeadshot } from '@/lib/supabase/queries'
 import { ArtworksTableWrapper } from '@/components/admin/ArtworksTableWrapper'
 import { BioEditorWrapper } from '@/components/admin/BioEditorWrapper'
 import { CVManagerWrapper } from '@/components/admin/CVManagerWrapper'
