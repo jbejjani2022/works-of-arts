@@ -36,16 +36,11 @@ export function ImageZoomModal({ src, alt, children }: ImageZoomModalProps) {
     }
   }, [isOpen])
 
-  // Reset zoom and position when modal opens
-  useEffect(() => {
-    if (isOpen) {
-      setScale(1)
-      setPosition({ x: 0, y: 0 })
-      setIsDragging(false)
-    }
-  }, [isOpen])
-
   const handleOpen = useCallback(() => {
+    // Reset zoom and position when opening modal
+    setScale(1)
+    setPosition({ x: 0, y: 0 })
+    setIsDragging(false)
     setIsOpen(true)
   }, [])
 

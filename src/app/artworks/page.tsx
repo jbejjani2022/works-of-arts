@@ -5,6 +5,7 @@ import { ArtworksGrid } from '@/components/artworks/ArtworksGrid'
 import { ArtworksGridSkeleton } from '@/components/ui/Skeleton'
 import { ErrorMessage } from '@/components/ui/ErrorMessage'
 import type { ArtworkMedium } from '@/lib/types'
+import { generateMetadata as genMetadata } from '@/lib/metadata'
 
 // Revalidate every 5 minutes
 export const revalidate = 300
@@ -13,41 +14,47 @@ interface ArtworksPageProps {
   searchParams: Promise<{ medium?: string }>
 }
 
+export async function generateMetadata({ searchParams }: ArtworksPageProps) {
+  const params = await searchParams
+  const mediumParam = params.medium
+
+  let title = 'Artworks'
+  if (mediumParam === 'Painting') title = 'Paintings'
+  else if (mediumParam === 'Work on Paper') title = 'Works on Paper'
+  else if (mediumParam === 'Sculpture') title = 'Sculpture'
+
+  return genMetadata({
+    title,
+    description: `Browse ${title.toLowerCase()} by contemporary artist`,
+    path: params.medium ? `/artworks?medium=${params.medium}` : '/artworks',
+  })
+}
+
 async function ArtworksContent({
   filterMedium,
 }: {
   filterMedium?: ArtworkMedium | null
 }) {
-  try {
-    const supabase = await createServerClient()
-    const artworks = await getArtworks(supabase, {
-      orderBy: 'year',
-      ascending: false,
-    })
+  const supabase = await createServerClient()
+  const artworks = await getArtworks(supabase, {
+    orderBy: 'year',
+    ascending: false,
+  })
 
-    // Calculate filtered count
-    const filteredArtworks = filterMedium
-      ? artworks.filter((artwork) => artwork.medium === filterMedium)
-      : artworks
-    const count = filteredArtworks.length
+  // Calculate filtered count
+  const filteredArtworks = filterMedium
+    ? artworks.filter((artwork) => artwork.medium === filterMedium)
+    : artworks
+  const count = filteredArtworks.length
 
-    return (
-      <>
-        <p className="text-sm font-light text-gray-500 -mt-6 mb-6">
-          {count} {count === 1 ? 'item' : 'items'}
-        </p>
-        <ArtworksGrid artworks={artworks} filterMedium={filterMedium} />
-      </>
-    )
-  } catch (error) {
-    console.error('Failed to fetch artworks:', error)
-    return (
-      <ErrorMessage
-        message="Failed to load artworks. Please try again later."
-        className="min-h-[400px]"
-      />
-    )
-  }
+  return (
+    <>
+      <p className="text-sm font-light text-gray-500 -mt-6 mb-6">
+        {count} {count === 1 ? 'item' : 'items'}
+      </p>
+      <ArtworksGrid artworks={artworks} filterMedium={filterMedium} />
+    </>
+  )
 }
 
 export default async function ArtworksPage({

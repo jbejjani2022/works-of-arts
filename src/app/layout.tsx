@@ -1,16 +1,12 @@
-import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { generateMetadata as genMetadata } from '@/lib/metadata'
 import './globals.css'
 
 const inter = Inter({
   subsets: ['latin'],
 })
 
-export const metadata: Metadata = {
-  title: 'Marcella Vlahos',
-  description:
-    'Contemporary artist working in painting, works on paper, and sculpture',
-}
+export const metadata = genMetadata()
 
 export default function RootLayout({
   children,

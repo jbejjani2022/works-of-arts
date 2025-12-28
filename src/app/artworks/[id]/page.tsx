@@ -7,6 +7,7 @@ import { createServerClient, getArtworkById, getCV } from '@/lib/supabase'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { ImageZoomModal } from '@/components/artworks/ImageZoomModal'
 import type { ArtworkMedium } from '@/lib/types'
+import { generateMetadata as genMetadata } from '@/lib/metadata'
 
 // Revalidate every 5 minutes
 export const revalidate = 300
@@ -14,6 +15,27 @@ export const revalidate = 300
 interface ArtworkDetailPageProps {
   params: Promise<{ id: string }>
   searchParams: Promise<{ medium?: string }>
+}
+
+export async function generateMetadata({ params }: ArtworkDetailPageProps) {
+  const { id } = await params
+
+  try {
+    const supabase = await createServerClient()
+    const artwork = await getArtworkById(supabase, id)
+
+    return genMetadata({
+      title: `${artwork.title} (${artwork.year})`,
+      description: artwork.details || `${artwork.title}, ${artwork.year}`,
+      image: artwork.image_url,
+      path: `/artworks/${id}`,
+    })
+  } catch {
+    return genMetadata({
+      title: 'Artwork',
+      path: `/artworks/${id}`,
+    })
+  }
 }
 
 async function ArtworkDetail({

@@ -124,4 +124,13 @@ See [docs/supabase-setup.md](docs/supabase-setup.md) for complete Supabase confi
 
 ## Deployment
 
-The application is designed to be deployed on Vercel with minimal configuration. See the deployment section in the architecture documentation for details.
+This application is designed for deployment on Vercel with GitHub integration.
+
+For complete deployment instructions, including:
+
+- Connecting GitHub to Vercel
+- Setting environment variables
+- Custom domain setup
+- Troubleshooting common issues
+
+See the [Deployment Guide](docs/deployment.md).

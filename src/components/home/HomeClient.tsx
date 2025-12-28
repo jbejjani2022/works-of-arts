@@ -17,8 +17,10 @@ export function HomeClient({ artwork, cv = null }: HomeClientProps) {
   const pathname = usePathname()
 
   // Ensure sidebar is closed when returning to home page
+  // This is a valid use of setState in useEffect as it's responding to external navigation state
   useEffect(() => {
     if (pathname === '/') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsSidebarOpen(false)
     }
   }, [pathname])

@@ -32,8 +32,10 @@ export function Sidebar({
     useState(isArtworksPage)
 
   // Keep submenu open when on artworks pages
+  // This is a valid use of setState in useEffect as it's syncing with router state
   useEffect(() => {
     if (isArtworksPage) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsArtworksSubmenuOpen(true)
     }
   }, [isArtworksPage])
