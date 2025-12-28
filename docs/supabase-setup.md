@@ -294,7 +294,9 @@ TO authenticated
 USING (bucket_id = 'CV');
 ```
 
-### Do the same for the headshot bucket
+### Headshot
+
+Following the above, set up a separate Headshot bucket and set policies for the bucket.
 
 ## 6. Authentication Setup
 
