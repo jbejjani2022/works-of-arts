@@ -2,7 +2,7 @@
 
 A minimal, modern, responsive website for artist portfolios, featuring a simple CMS for managing artworks and bio content.
 
-Work done on commission for artist Marcella Vlahos.
+Work done on commission for artist [Marcella Vlahos](https://marcellavlahos.com).
 
 Easily configurable for the work of any artist.
 
@@ -16,10 +16,24 @@ This is a Next.js application that serves as an artist's portfolio website with:
 
 ## Features
 
-- **Public Portfolio**: Hero homepage, about page with artist headshot, filterable artworks gallery
+- **Public Portfolio**: Hero homepage displaying a randomly drawn artwork, about page with artist bio and headshot, filterable artworks gallery
 - **Admin CMS**: Authentication-protected interface for managing artworks, bio, headshot, and CV
 - **Responsive Design**: Mobile-first design that works on all devices
 - **Modern Stack**: Next.js 14 with App Router, TypeScript, Tailwind CSS, and Supabase
+
+![Home page](/public/features/home.png)
+
+![About page](/public/features/about.png)
+
+![Gallery page](/public/features/gallery.png)
+
+![Inspect page](/public/features/inspect.png)
+
+![Login page](/public/features/login.png)
+
+![Dashboard page 1](/public/features/dashboard1.png)
+
+![Dashboard page 2](/public/features/dashboard2.png)
 
 ## How to Run
 
