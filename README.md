@@ -52,12 +52,6 @@ This is a Next.js application that serves as an artist's portfolio website with:
 
    Follow the instructions in [docs/supabase-setup.md](docs/supabase-setup.md) to create the database tables and storage buckets.
 
-   After setting up the database, run the migration to add the headshots table:
-
-   ```bash
-   # See docs/migrations/001_add_headshots_table.sql for SQL to run in Supabase
-   ```
-
 5. **Run development server:**
    ```bash
    npm run dev

@@ -296,7 +296,7 @@ USING (bucket_id = 'CV');
 
 ### Headshot
 
-Following the above, set up a separate Headshot bucket and set policies for the bucket.
+Following the same steps as the artworks and CV buckets, set up a Headshot bucket and set its policies.
 
 ## 6. Authentication Setup
 
